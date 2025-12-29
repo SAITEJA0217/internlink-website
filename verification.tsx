@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 interface CertificateData {
@@ -17,13 +17,15 @@ const Verify: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const API_URL =
-    "https://script.google.com/macros/s/AKfycbxwayyyO3YfUp8euSZLq80-7D9h8YaWB5rGuIDW6l7lC0uICZ_Ry5lSl5-oDtxo6HjIiA/exec";
+    "https://script.google.com/macros/s/AKfycbyD92jT67WlZnZL0NifkgG5q7nQGGwyfXJv9i5-Sxj7dRFAuNxqQgqW0NEH8UlA0G5REg/exec";
 
-  const handleVerify = async () => {
+  const handleVerify = async (idOverride?: string) => {
+    const idToVerify = idOverride || certificateId;
+
     setResult(null);
     setError("");
 
-    if (!certificateId.trim()) {
+    if (!idToVerify.trim()) {
       setError("Please enter a Certificate ID");
       return;
     }
@@ -32,7 +34,7 @@ const Verify: React.FC = () => {
 
     try {
       const response = await axios.get<CertificateData>(
-        `${API_URL}?id=${certificateId.trim()}`
+        `${API_URL}?id=${idToVerify.trim()}`
       );
 
       if (response.data.status === "valid") {
@@ -47,6 +49,17 @@ const Verify: React.FC = () => {
       setLoading(false);
     }
   };
+
+  // ✅ AUTO-READ CERTIFICATE ID FROM URL (QR FLOW)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const idFromUrl = params.get("id");
+
+    if (idFromUrl) {
+      setCertificateId(idFromUrl);
+      handleVerify(idFromUrl); // auto verify
+    }
+  }, []);
 
   return (
     <div
@@ -84,7 +97,7 @@ const Verify: React.FC = () => {
       />
 
       <button
-        onClick={handleVerify}
+        onClick={() => handleVerify()}
         disabled={loading}
         style={{
           marginTop: "20px",
