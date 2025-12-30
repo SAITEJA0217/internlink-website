@@ -17,7 +17,7 @@ const Verify: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const API_URL =
-    "https://script.google.com/macros/s/AKfycbyD92jT67WlZnZL0NifkgG5q7nQGGwyfXJv9i5-Sxj7dRFAuNxqQgqW0NEH8UlA0G5REg/exec";
+    "https://script.google.com/macros/s/AKfycbwZUcACyIYYn2xT7WXU_b1COELcCRc_SG7uMwXNB4A0g5tWJ_StPpjdKON-6W4vzz-wdA/exec";
 
   const handleVerify = async (idOverride?: string) => {
     const idToVerify = idOverride || certificateId;
