@@ -1,93 +1,147 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 interface CertificateData {
-  id: string;
-  name: string;
-  domain: string;
-  date: string;
+  status: "valid" | "invalid";
+  id?: string;
+  name?: string;
+  domain?: string;
+  date?: string;
   url?: string;
 }
 
 const Verify: React.FC = () => {
-  const [certificateId, setCertificateId] = useState<string>("");
+  const [certificateId, setCertificateId] = useState("");
   const [result, setResult] = useState<CertificateData | null>(null);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const API_URL =
-    "https://script.google.com/macros/s/AKfycbydFGweevEjoLaBCGmP_604x481u1sn4pHzbBq-6yLcASvHxopcGAg-ZCZUdL_x-9D3/exec";
+    "https://script.google.com/macros/s/AKfycbyXC8bCsjBA5wU6-RuQPUbse7WzZXHRG3GBW0d2CvmXQfAY6FXQA9ghye97V_ggYv3Ocw/exec";
 
-  const handleVerify = async () => {
+  const handleVerify = async (idOverride?: string) => {
+    const idToVerify = idOverride || certificateId;
+
     setResult(null);
     setError("");
 
+    if (!idToVerify.trim()) {
+      setError("Please enter a Certificate ID");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      const response = await axios.get<CertificateData | null>(
-        `${API_URL}?id=${certificateId}`
+      const response = await axios.get<CertificateData>(
+        `${API_URL}?id=${idToVerify.trim()}`
       );
 
-      if (response.data) {
+      if (response.data.status === "valid") {
         setResult(response.data);
       } else {
         setError("❌ Invalid Certificate ID");
       }
-    } catch (err: unknown) {
+    } catch (err) {
       console.error(err);
-      setError("❌ Server Error");
+      setError("❌ Server Error. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  // ✅ AUTO-READ CERTIFICATE ID FROM URL (QR FLOW)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const idFromUrl = params.get("id");
+
+    if (idFromUrl) {
+      setCertificateId(idFromUrl);
+      handleVerify(idFromUrl); // auto verify
+    }
+  }, []);
+
   return (
-    <div style={{ padding: "30px", maxWidth: "500px", margin: "auto" }}>
-      <h1>Verify Certificate</h1>
+    <div
+      style={{
+        padding: "40px",
+        maxWidth: "520px",
+        margin: "60px auto",
+        borderRadius: "16px",
+        background: "#ffffff",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+        fontFamily: "Inter, sans-serif",
+      }}
+    >
+      <h1 style={{ textAlign: "center", marginBottom: "10px" }}>
+        Certificate Verification
+      </h1>
+
+      <p style={{ textAlign: "center", color: "#6b7280", fontSize: "14px" }}>
+        Verify InternLink internship certificates instantly
+      </p>
 
       <input
         type="text"
-        placeholder="Enter Certificate ID"
+        placeholder="Enter Certificate ID (e.g. IL12DM0000)"
         value={certificateId}
         onChange={(e) => setCertificateId(e.target.value)}
         style={{
           width: "100%",
-          padding: "12px",
-          marginTop: "20px",
-          borderRadius: "8px",
-          border: "1px solid #ccc",
+          padding: "14px",
+          marginTop: "25px",
+          borderRadius: "10px",
+          border: "1px solid #d1d5db",
+          fontSize: "15px",
         }}
       />
 
       <button
-        onClick={handleVerify}
+        onClick={() => handleVerify()}
+        disabled={loading}
         style={{
           marginTop: "20px",
-          padding: "12px",
-          background: "#4f46e5",
-          color: "white",
+          padding: "14px",
+          background: loading ? "#9ca3af" : "#4f46e5",
+          color: "#fff",
           border: "none",
-          borderRadius: "8px",
+          borderRadius: "10px",
           width: "100%",
-          cursor: "pointer",
+          fontSize: "16px",
+          fontWeight: 600,
+          cursor: loading ? "not-allowed" : "pointer",
         }}
       >
-        Verify
+        {loading ? "Verifying..." : "Verify Certificate"}
       </button>
 
       {error && (
-        <p style={{ color: "red", marginTop: "15px", fontWeight: 500 }}>
+        <p
+          style={{
+            color: "#dc2626",
+            marginTop: "16px",
+            textAlign: "center",
+            fontWeight: 500,
+          }}
+        >
           {error}
         </p>
       )}
 
-      {result && (
+      {result?.status === "valid" && (
         <div
           style={{
-            marginTop: "20px",
-            padding: "20px",
-            border: "1px solid #ddd",
-            borderRadius: "10px",
-            background: "#f7f7f7",
+            marginTop: "25px",
+            padding: "22px",
+            borderRadius: "14px",
+            background: "#f9fafb",
+            border: "1px solid #e5e7eb",
           }}
         >
-          <h3>✔ Certificate Found</h3>
+          <h3 style={{ color: "#16a34a", marginBottom: "15px" }}>
+            ✔ Certificate Verified
+          </h3>
+
           <p>
             <strong>Name:</strong> {result.name}
           </p>
@@ -95,7 +149,7 @@ const Verify: React.FC = () => {
             <strong>Domain:</strong> {result.domain}
           </p>
           <p>
-            <strong>Date:</strong> {result.date}
+            <strong>Internship Date:</strong> {result.date}
           </p>
 
           {result.url && (
@@ -103,7 +157,13 @@ const Verify: React.FC = () => {
               href={result.url}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "#4f46e5", fontWeight: 600 }}
+              style={{
+                display: "inline-block",
+                marginTop: "12px",
+                color: "#4f46e5",
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
             >
               View Certificate
             </a>
