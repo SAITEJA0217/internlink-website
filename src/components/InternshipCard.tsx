@@ -40,7 +40,7 @@ const InternshipCard = ({ internship }: InternshipCardProps) => {
       <Button
         variant="outline"
         className="w-full"
-        onClick={() => window.open(internship.applyUrl, '_blank')}
+        onClick={() => window.open("https://forms.gle/8mNfsuo32rTzgi6K7", "_blank")}
       >
         Apply Now
       </Button>

@@ -9,30 +9,75 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  background-color: #08080C;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
+/* Custom premium scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B0B0F;
+  background: #08080C;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #6C63FF 0%, #00E0FF 100%);
-  border-radius: 5px;
+  background: linear-gradient(180deg, rgba(108, 99, 255, 0.3) 0%, rgba(0, 224, 255, 0.3) 100%);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #5a52d5 0%, #00c4d4 100%);
+  background: linear-gradient(180deg, rgba(108, 99, 255, 0.6) 0%, rgba(0, 224, 255, 0.6) 100%);
+}
+
+/* Premium startup mesh background */
+.mesh-bg {
+  background-color: #08080C;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(108, 99, 255, 0.1) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(0, 224, 255, 0.1) 0px, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, 0.003) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.003) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+}
+
+/* Micro-animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(1.05); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s ease-in-out infinite;
+}
+
+/* Clean glassmorphism components */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(0, 224, 255, 0.3);
+  box-shadow: 0 0 40px -15px rgba(108, 99, 255, 0.15);
 }

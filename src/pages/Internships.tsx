@@ -25,7 +25,7 @@ const Internships = () => {
   });
 
   return (
-    <div className="py-20 min-h-screen">
+    <div className="py-24 min-h-screen mesh-bg">
       <Container>
         <AnimatedSection>
           <SectionTitle center subtitle="Find your perfect internship opportunity">
@@ -36,32 +36,32 @@ const Internships = () => {
         <AnimatedSection delay={0.1}>
           <div className="mt-12 mb-8">
             <div className="relative max-w-2xl mx-auto">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
               <input
                 type="text"
                 placeholder="Search internships or keywords..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl pl-12 pr-4 py-4 text-white placeholder-white/40 focus:outline-none focus:border-[#00E0FF]/50 focus:ring-2 focus:ring-[#00E0FF]/20 transition-all"
+                className="w-full bg-white/[0.02] border border-white/[0.08] focus:border-[#00E0FF]/50 rounded-xl pl-12 pr-4 py-4 text-white placeholder-white/35 focus:outline-none focus:ring-2 focus:ring-[#00E0FF]/15 transition-all text-sm font-medium"
               />
             </div>
           </div>
         </AnimatedSection>
 
         <AnimatedSection delay={0.2}>
-          <div className="flex items-center gap-3 mb-8 overflow-x-auto pb-2">
-            <Filter className="w-5 h-5 text-white/60 flex-shrink-0" />
+          <div className="flex items-center gap-3 mb-8 overflow-x-auto pb-3 scrollbar-thin">
+            <Filter className="w-5 h-5 text-white/40 flex-shrink-0" />
 
             {categories.map((category) => (
               <motion.button
                 key={category}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2 rounded-xl font-medium transition-all whitespace-nowrap ${
+                className={`px-5 py-2 rounded-full font-medium text-xs border whitespace-nowrap transition-all duration-300 ${
                   selectedCategory === category
-                    ? 'bg-gradient-to-r from-[#6C63FF] to-[#00E0FF] text-white shadow-lg shadow-[#6C63FF]/30'
-                    : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white border border-white/10'
+                    ? 'bg-white text-black border-transparent shadow-lg shadow-white/5 font-semibold'
+                    : 'bg-white/[0.02] border-white/[0.08] text-white/60 hover:bg-white/5 hover:text-white'
                 }`}
               >
                 {category}
